@@ -2,6 +2,43 @@ class RBT(object):
     def __init__(self):
         self.root = None
 
+    def traverse(self):
+        return f"{self.pre_order()}\n{self.color_pre_order()}"
+
+    def pre_order(self, *args) -> str:
+        node = self.root if len(args) == 0 else args[0]
+
+        if node is not None:
+            if node.is_leaf():
+                return str(node.data)
+
+            else:
+                result = str(node.data) + ' ('
+                result += self.pre_order(node.left) + ', '
+                result += self.pre_order(node.right) + ')'
+
+                return result
+
+        else:
+            return 'X'
+
+    def color_pre_order(self, *args) -> str:
+        node = self.root if len(args) == 0 else args[0]
+
+        if node is not None:
+            if node.is_leaf():
+                return str(node.color)
+
+            else:
+                result = str(node.color) + ' ('
+                result += self.color_pre_order(node.left) + ', '
+                result += self.color_pre_order(node.right) + ')'
+
+                return result
+
+        else:
+            return 'X'
+
     # Recorrido de orden medio
     def midTraverse(self, x):
         if x is None:

@@ -1,4 +1,4 @@
-from nodo import RBN
+from nodo import Nodo
 from tree_BR import RBT
 from os import system
 
@@ -15,7 +15,7 @@ while True:
         split_numbers = numbers.split()
 
         for x in split_numbers:
-            rbt.add(RBN(int(x)))
+            rbt.add(Nodo(int(x, 0)))
 
     elif choice == '2':
         system('cls')
@@ -35,3 +35,6 @@ while True:
         system('cls')
 
         break
+
+# Pablo Coti
+# Andree Robles

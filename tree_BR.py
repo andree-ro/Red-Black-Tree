@@ -3,7 +3,7 @@ class RBT(object):
         self.root = None
 
     def traverse(self):
-        return f"{self.pre_order()}\n{self.color_pre_order()}"
+        return f"{self.pre_order()}\n {self.color_pre_order()}"
 
     def pre_order(self, *args) -> str:
         node = self.root if len(args) == 0 else args[0]
@@ -39,51 +39,52 @@ class RBT(object):
         else:
             return 'X'
 
-    # Recorrido de orden medio
-    def midTraverse(self, x):
-        if x is None:
+    # Recorrido de orden menor a mayor
+    def midTraverse(self, number):
+        if number is None:
             return
-        self.midTraverse(x.left)
-        colorStr = '1' if x.color == 1 else '0'
-        print(x.data, colorStr)
-        self.midTraverse(x.right)
+        self.midTraverse(number.left)
+        colorStr = '1' if number.color == 1 else '0'
+        print(number.data, colorStr)
+        self.midTraverse(number.right)
 
     # Agregar un nodo
-    def add(self, x):
+    def add(self, number):
         # Si no hay un nodo raíz como nodo raíz
         if self.root is None:
-            self.root = x
-            x.color = 1  # El nodo raíz es negro
+            self.root = number
+            number.color = 1  # El nodo raíz es negro
             # print ('Agregado exitosamente', x.data)
             return
         # Encuentre una posición de inserción adecuada
         p = self.root
         while p is not None:
-            if x.data < p.data:
+            if number.data < p.data:
                 if p.left is None:
-                    p.left = x
-                    x.parent = p
+                    p.left = number
+                    number.parent = p
                     # print ('Agregado exitosamente', x.data)
-                    self.addFix(x)
+                    self.addFix(number)
                     break
                 p = p.left
             else:
                 if p.right is None:
-                    p.right = x
-                    x.parent = p
+                    p.right = number
+                    number.parent = p
                     # print ('Agregado exitosamente', x.data)
-                    self.addFix(x)
+                    self.addFix(number)
                     break
                 p = p.right
 
     # Ajusta el árbol rojo-negro
-    def addFix(self, x):
+    def addFix(self, number):
         while True:
-            if x == self.root:  # Si se procesa el nodo raíz, el color es negro
-                x.color = 1
+            if number == self.root:  # Si se procesa el nodo raíz, el color es negro
+                number.color = 1
                 return
-            p = x.parent  # Papi
-            if p.color == 1 or x.color == 1:  # Mientras uno de mí y papá sea negro, no puede ser doblemente rojo, luego regrese
+            p = number.parent  # Papi
+            if p.color == 1 or number.color == 1:  # Mientras uno de mí y papá sea negro, no puede ser doblemente rojo,
+                # luego regrese
                 return
             # A continuación, analiza la situación de Red Dad
             g = p.parent  # El abuelo Red Dad debe tener un padre, porque el rojo nunca es el nodo raíz
@@ -93,30 +94,31 @@ class RBT(object):
                 g.color = 0  # El abuelo se pone rojo
                 x = g  # x apunta al abuelo y luego continúa el ciclo
                 continue
-            # A continuación, analiza la situación del tío Hei. Hay cuatro situaciones: izquierda, izquierda, derecha, izquierda, derecha
-            if p == g.left and x == p.left:  # Izquierda izquierda
+            # A continuación, analiza la situación del tío Hei. Hay cuatro situaciones: izquierda, izquierda,
+            # derecha, izquierda, derecha
+            if p == g.left and number == p.left:  # Izquierda izquierda
                 # Usa a papá como punto de apoyo
                 self.rotateRight(p)
-            elif p == g.left and x == p.right:  # Acerca de
+            elif p == g.left and number == p.right:  # Acerca de
                 # Usa x como punto de apoyo
-                self.rotateLeft(x)
-                # Use x como pivote para girar al abuelo a la derecha (la rotación anterior convierte al abuelo en un nuevo padre)
-                self.rotateRight(x)
-            elif p == g.right and x == p.right:  # Derecha derecha es en realidad la imagen especular de izquierda e izquierda
+                self.rotateLeft(number)
+                # Use x como pivote para girar al abuelo a la derecha (la rotación anterior convierte al abuelo en un
+                # nuevo padre)
+                self.rotateRight(number)
+            elif p == g.right and number == p.right:  # Derecha derecha es en realidad la imagen especular de
+                # izquierda e
+                # izquierda
                 # Abuelo zurdo con padre como pivote
                 self.rotateLeft(p)
-            elif p == g.right and x == p.left:  # Derecha izquierda es en realidad la imagen especular de izquierda y derecha
+            elif p == g.right and number == p.left:  # Derecha izquierda es en realidad la imagen especular de
+                # izquierda y
+                # derecha
                 # Usa x como punto de apoyo
-                self.rotateRight(x)
-                # Toma x como punto de apoyo para girar a la izquierda al abuelo (la rotación anterior convierte al abuelo en un nuevo padre)
-                self.rotateLeft(x)
+                self.rotateRight(number)
+                # Toma x como punto de apoyo para girar a la izquierda al abuelo (la rotación anterior convierte al
+                # abuelo en un nuevo padre)
+                self.rotateLeft(number)
 
-    #
-    # En cuanto a la rotación de los árboles rojo y negro, siempre ha sido un punto difícil
-    # Aquí proporciono una fórmula:
-    # Rotación derecha: el fulcro ocupa la posición original del punto de rotación, el punto de rotación derecho del fulcro se usa como el izquierdo y el punto de rotación es el derecho del fulcro
-    # Rotación izquierda: el fulcro ocupa la posición original del punto de rotación, el punto de rotación izquierdo del fulcro se usa como el derecho y el punto de rotación es la izquierda del fulcro
-    #
     # Pivote p para diestros
     def rotateRight(self, p):
         g = p.parent  # El nodo padre del pivote es el punto de giro

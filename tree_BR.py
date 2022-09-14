@@ -39,7 +39,7 @@ class RBT(object):
         else:
             return 'X'
 
-    # Recorrido de orden menor a mayor
+    # Recorrido de orden medio
     def midTraverse(self, number):
         if number is None:
             return
@@ -48,22 +48,17 @@ class RBT(object):
         print(number.data, colorStr)
         self.midTraverse(number.right)
 
-    # Agregar un nodo
     def add(self, number):
-        # Si no hay un nodo raíz como nodo raíz
         if self.root is None:
             self.root = number
-            number.color = 1  # El nodo raíz es negro
-            # print ('Agregado exitosamente', x.data)
+            number.color = 1
             return
-        # Encuentre una posición de inserción adecuada
         p = self.root
         while p is not None:
             if number.data < p.data:
                 if p.left is None:
                     p.left = number
                     number.parent = p
-                    # print ('Agregado exitosamente', x.data)
                     self.addFix(number)
                     break
                 p = p.left
@@ -71,62 +66,42 @@ class RBT(object):
                 if p.right is None:
                     p.right = number
                     number.parent = p
-                    # print ('Agregado exitosamente', x.data)
                     self.addFix(number)
                     break
                 p = p.right
 
-    # Ajusta el árbol rojo-negro
-    def addFix(self, number):
+    def addFix(self, x):
         while True:
-            if number == self.root:  # Si se procesa el nodo raíz, el color es negro
-                number.color = 1
+            if x == self.root:
+                x.color = 1
                 return
-            p = number.parent  # Papi
-            if p.color == 1 or number.color == 1:  # Mientras uno de mí y papá sea negro, no puede ser doblemente rojo,
-                # luego regrese
+            p = x.parent
+            if p.color == 1 or x.color == 1:
                 return
-            # A continuación, analiza la situación de Red Dad
-            g = p.parent  # El abuelo Red Dad debe tener un padre, porque el rojo nunca es el nodo raíz
-            u = g.left if p == g.right else g.right  # El tío El tío puede ser un nodo vacío
-            if u is not None and u.color == 0:  # Luego coloréalo y continúa ajustando del abuelo
-                u.color = p.color = 1  # Tío y papá se ponen negros
-                g.color = 0  # El abuelo se pone rojo
-                x = g  # x apunta al abuelo y luego continúa el ciclo
+            g = p.parent
+            u = g.left if p == g.right else g.right
+            if u is not None and u.color == 0:
+                u.color = p.color = 1
+                g.color = 0
+                x = g
                 continue
-            # A continuación, analiza la situación del tío Hei. Hay cuatro situaciones: izquierda, izquierda,
-            # derecha, izquierda, derecha
-            if p == g.left and number == p.left:  # Izquierda izquierda
-                # Usa a papá como punto de apoyo
+            if p == g.left and x == p.left:
                 self.rotateRight(p)
-            elif p == g.left and number == p.right:  # Acerca de
-                # Usa x como punto de apoyo
-                self.rotateLeft(number)
-                # Use x como pivote para girar al abuelo a la derecha (la rotación anterior convierte al abuelo en un
-                # nuevo padre)
-                self.rotateRight(number)
-            elif p == g.right and number == p.right:  # Derecha derecha es en realidad la imagen especular de
-                # izquierda e
-                # izquierda
-                # Abuelo zurdo con padre como pivote
+            elif p == g.left and x == p.right:
+                self.rotateLeft(x)
+                self.rotateRight(x)
+            elif p == g.right and x == p.right:
                 self.rotateLeft(p)
-            elif p == g.right and number == p.left:  # Derecha izquierda es en realidad la imagen especular de
-                # izquierda y
-                # derecha
-                # Usa x como punto de apoyo
-                self.rotateRight(number)
-                # Toma x como punto de apoyo para girar a la izquierda al abuelo (la rotación anterior convierte al
-                # abuelo en un nuevo padre)
-                self.rotateLeft(number)
+            elif p == g.right and x == p.left:
+                self.rotateRight(x)
+                self.rotateLeft(x)
 
-    # Pivote p para diestros
     def rotateRight(self, p):
-        g = p.parent  # El nodo padre del pivote es el punto de giro
-        # Diestro g
-        if g == self.root:  # Si g es el nodo raíz, entonces p se convierte en el nodo raíz
+        g = p.parent
+        if g == self.root:
             self.root = p
             p.parent = None
-        else:  # Si g no es el nodo raíz, entonces debe haber g. El padre p ocupa la posición de g
+        else:
             gp = g.parent
             p.parent = gp
             if g == gp.left:
@@ -138,17 +113,14 @@ class RBT(object):
             p.right.parent = g
         p.right = g
         g.parent = p
-        # g y p intercambio de color
         p.color, g.color = g.color, p.color
 
-    # Pivote p para zurdos
     def rotateLeft(self, p):
-        g = p.parent  # El nodo padre del pivote es el punto de giro
-        # Zurdo g
-        if g == self.root:  # Si g es el nodo raíz, entonces p se convierte en el nodo raíz
+        g = p.parent
+        if g == self.root:
             self.root = p
             p.parent = None
-        else:  # Si g no es el nodo raíz, entonces debe haber g. El padre p ocupa la posición de g
+        else:
             gp = g.parent
             p.parent = gp
             if g == gp.left:
@@ -160,5 +132,4 @@ class RBT(object):
             p.left.parent = g
         p.left = g
         g.parent = p
-        # g y p intercambio de color
         p.color, g.color = g.color, p.color
